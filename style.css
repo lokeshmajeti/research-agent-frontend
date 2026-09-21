@@ -702,6 +702,19 @@ body {
   text-decoration: underline;
 }
 
+.upload-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+#file-selection-status {
+  color: #a1a1aa;
+  font-size: 12px;
+}
+
 /* Vault items */
 .vault-grid {
   display: grid;

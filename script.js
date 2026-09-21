@@ -56,6 +56,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const navTabs = document.querySelectorAll('.nav-tab');
   const tabContents = document.querySelectorAll('.tab-content');
   const analyzeBtn = document.getElementById('analyze-btn');
+  const modeTabs = document.querySelectorAll('.mode-tab');
+  const modeSections = document.querySelectorAll('.mode-section');
+  const dropZone = document.getElementById('drop-zone');
+  const browseTrigger = document.getElementById('browse-trigger');
+  const fileInput = document.getElementById('file-input');
+  const uploadActions = document.getElementById('upload-actions');
+  const fileSelectionStatus = document.getElementById('file-selection-status');
+  const analyzeFilesBtn = document.getElementById('analyze-files-btn');
   const pipelineStepper = document.getElementById('pipeline-stepper');
 
   /* ----------------------------------------------------
@@ -248,6 +256,17 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ----------------------------------------------------
      8. DASHBOARD NAVIGATION & ANALYSIS PIPELINE
      ---------------------------------------------------- */
+  modeTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      modeTabs.forEach(t => t.classList.remove('active'));
+      modeSections.forEach(section => section.classList.add('hidden'));
+
+      tab.classList.add('active');
+      const section = document.getElementById(`section-${tab.id.replace('tab-btn-', '')}`);
+      section.classList.remove('hidden');
+    });
+  });
+
   navTabs.forEach(tab => {
     tab.addEventListener('click', () => {
       navTabs.forEach(t => t.classList.remove('active'));
@@ -260,7 +279,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  analyzeBtn.addEventListener('click', () => {
+  function runAnalysis() {
     pipelineStepper.classList.remove('hidden');
     const stepIds = ['step-0', 'step-1', 'step-2', 'step-3'];
     let cur = 0;
@@ -277,5 +296,71 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => pipelineStepper.classList.add('hidden'), 800);
       }
     }, 800);
+  }
+
+  analyzeBtn.addEventListener('click', runAnalysis);
+
+  function updateSelectedFiles(files) {
+    if (!files.length) {
+      uploadActions.classList.add('hidden');
+      fileSelectionStatus.textContent = '';
+      return;
+    }
+
+    const allowedExtensions = ['pdf', 'doc', 'docx', 'txt'];
+    const invalidFiles = files.filter(file => {
+      const extension = file.name.split('.').pop().toLowerCase();
+      return !allowedExtensions.includes(extension);
+    });
+
+    if (invalidFiles.length) {
+      alert('Please upload only PDF, DOC, DOCX, or TXT files.');
+      fileInput.value = '';
+      uploadActions.classList.add('hidden');
+      fileSelectionStatus.textContent = '';
+      return;
+    }
+
+    fileSelectionStatus.textContent = `${files.length} file${files.length === 1 ? '' : 's'} selected`;
+    uploadActions.classList.remove('hidden');
+    lucide.createIcons();
+  }
+
+  browseTrigger.addEventListener('click', (event) => {
+    event.stopPropagation();
+    fileInput.click();
+  });
+
+  dropZone.addEventListener('click', () => fileInput.click());
+  fileInput.addEventListener('change', () => updateSelectedFiles(Array.from(fileInput.files)));
+
+  ['dragenter', 'dragover'].forEach(eventName => {
+    dropZone.addEventListener(eventName, (event) => {
+      event.preventDefault();
+      dropZone.classList.add('drag-over');
+    });
+  });
+
+  ['dragleave', 'drop'].forEach(eventName => {
+    dropZone.addEventListener(eventName, (event) => {
+      event.preventDefault();
+      dropZone.classList.remove('drag-over');
+    });
+  });
+
+  dropZone.addEventListener('drop', (event) => {
+    const files = Array.from(event.dataTransfer.files);
+    const dataTransfer = new DataTransfer();
+    files.forEach(file => dataTransfer.items.add(file));
+    fileInput.files = dataTransfer.files;
+    updateSelectedFiles(files);
+  });
+
+  analyzeFilesBtn.addEventListener('click', () => {
+    if (!fileInput.files.length) {
+      alert('Please upload at least one file before analyzing.');
+      return;
+    }
+    runAnalysis();
   });
 });
