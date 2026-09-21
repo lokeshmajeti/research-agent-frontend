@@ -279,25 +279,132 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  function runAnalysis() {
+ const BACKEND_URL = "https://research-agent-backend-r30f.onrender.com/api/analyze";
+
+  async function runAnalysis() {
+    const searchInput = document.getElementById('search-input');
+    const query = searchInput.value.trim();
+    const fileInput = document.getElementById('file-input');
+
+    if (!query && fileInput.files.length === 0) {
+      alert("Please enter a research topic or upload a file.");
+      return;
+    }
+
+    // Show pipeline and reset steps
     pipelineStepper.classList.remove('hidden');
     const stepIds = ['step-0', 'step-1', 'step-2', 'step-3'];
-    let cur = 0;
-
     stepIds.forEach(id => document.getElementById(id).classList.remove('active'));
     document.getElementById(stepIds[0]).classList.add('active');
 
-    const interval = setInterval(() => {
-      cur++;
-      if (cur < stepIds.length) {
-        document.getElementById(stepIds[cur]).classList.add('active');
-      } else {
-        clearInterval(interval);
-        setTimeout(() => pipelineStepper.classList.add('hidden'), 800);
-      }
-    }, 800);
+    // Prepare data for FastAPI
+    const formData = new FormData();
+    formData.append("research_question", query || "Analyze this document.");
+    if (fileInput.files.length > 0) {
+      formData.append("file", fileInput.files[0]);
+    }
+
+    // Simulate step 2 while waiting for Render
+    document.getElementById(stepIds[1]).classList.add('active');
+
+    try {
+      const response = await fetch(BACKEND_URL, {
+        method: "POST",
+        body: formData
+      });
+
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      
+      document.getElementById(stepIds[2]).classList.add('active');
+      const data = await response.json();
+      
+      document.getElementById(stepIds[3]).classList.add('active');
+      
+      // Push live data into the UI
+      renderRealData(data);
+      
+      setTimeout(() => pipelineStepper.classList.add('hidden'), 1500);
+
+    } catch (error) {
+      alert(`Backend connection failed: ${error.message}. Is Render awake?`);
+      pipelineStepper.classList.add('hidden');
+    }
   }
 
+  function renderRealData(data) {
+    // 1. Inject Live Papers
+    const papersContainer = document.getElementById('papers-container');
+    papersContainer.innerHTML = '';
+    document.getElementById('paper-count-tag').textContent = `${data.papers ? data.papers.length : 0} Papers Found`;
+    
+    if (data.papers) {
+      data.papers.forEach(p => {
+        const authors = p.authors ? p.authors.slice(0, 2).join(', ') + (p.authors.length > 2 ? ' et al.' : '') : 'Unknown';
+        const year = p.published ? p.published.substring(0, 4) : 'N/A';
+        papersContainer.innerHTML += `
+          <div class="paper-item">
+            <div class="paper-title-row">
+              <h4>${p.title}</h4>
+              <a href="${p.url}" target="_blank" class="ext-link"><i data-lucide="external-link"></i></a>
+            </div>
+            <div class="paper-meta"><span>${authors}</span> <span class="badge-year">${year}</span></div>
+            <div class="tag-row"><span class="dataset-tag">arXiv</span></div>
+          </div>`;
+      });
+    }
+
+    // 2. Inject Live Matrix
+    const matrixBody = document.querySelector('#tab-matrix tbody');
+    matrixBody.innerHTML = '';
+    if (data.matrix) {
+      data.matrix.forEach(row => {
+        matrixBody.innerHTML += `
+          <tr>
+            <td class="bold-text">${row.paper}</td>
+            <td>${row.methodology}</td>
+            <td>${row.dataset}</td>
+            <td class="success-text">${row.key_result}</td>
+            <td class="lim-text">${row.limitation}</td>
+          </tr>`;
+      });
+    }
+
+    // 3. Inject Live Gaps
+    const gapsTab = document.getElementById('tab-gaps');
+    gapsTab.innerHTML = '';
+    if (data.gaps) {
+      data.gaps.forEach(gap => {
+        gapsTab.innerHTML += `
+          <div class="gap-card">
+            <div class="gap-top">
+              <span class="gap-badge">AI Identified Gap</span>
+              <h4>${gap.title}</h4>
+            </div>
+            <div class="gap-reason">
+              <p>${gap.description}</p>
+            </div>
+          </div>`;
+      });
+    }
+
+    // 4. Inject Live Approach
+    const approachTab = document.getElementById('tab-approach');
+    if (data.approach) {
+      approachTab.innerHTML = `
+        <div class="blueprint-box">
+          <h3>Proposed Solution Direction</h3>
+          <p>${data.approach.summary}</p>
+        </div>
+        <div class="blueprint-grid">
+          <div class="bp-card" style="grid-column: span 2;">
+            <h4>Suggested Methodology</h4>
+            <p>${data.approach.methodology}</p>
+          </div>
+        </div>`;
+    }
+    
+    lucide.createIcons();
+  }
   analyzeBtn.addEventListener('click', runAnalysis);
 
   function updateSelectedFiles(files) {
