@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LitGap AI - Research Gap Analysis</title>
+  <!-- Boxicons for Auth + Lucide for Dashboard -->
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Official Google Identity Services SDK -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ================= AUTH SCREEN ================= -->
+  <div id="auth-screen">
+    <div class="container">
+      <div class="curved-shape"></div>
+      <div class="curved-shape2"></div>
+
+      <!-- ================= LOGIN FORM BOX ================= -->
+      <div class="form-box Login">
+        <h2 class="animation" style="--i:0;">Sign In</h2>
+
+        <!-- Auth Method Selector (Google / Phone / Email) -->
+        <div class="auth-tabs animation" style="--i:1;">
+          <button type="button" class="auth-tab-btn active" id="tab-login-google-btn">
+            <i class='bx bxl-google'></i> Google
+          </button>
+          <button type="button" class="auth-tab-btn" id="tab-login-phone-btn">
+            <i class='bx bx-mobile-alt'></i> Phone OTP
+          </button>
+          <button type="button" class="auth-tab-btn" id="tab-login-email-btn">
+            <i class='bx bx-envelope'></i> Email
+          </button>
+        </div>
+
+        <!-- 1. Login with Google -->
+        <div id="login-google-view" class="auth-view active">
+          <p class="auth-subtext animation" style="--i:2;">One-click sign-in with your Google account</p>
+          <div class="google-btn-wrapper animation" style="--i:3;">
+           <div id="login-google-btn"></div>
+          </div>
+        </div>
+
+        <!-- 2. Login with Phone OTP -->
+        <div id="login-phone-view" class="auth-view hidden">
+          <div id="login-phone-step">
+            <div class="input-box animation" style="--i:2;">
+              <input type="tel" id="login-user-phone" placeholder=" " required />
+              <label>Phone Number</label>
+              <i class='bx bx-phone'></i>
+            </div>
+            <button type="button" class="btn animation" style="--i:3;" id="login-send-otp-btn">
+              <i class='bx bx-send'></i> Send OTP
+            </button>
+          </div>
+
+          <div id="login-otp-step" class="hidden">
+            <div class="input-box">
+              <input type="text" id="login-user-otp" maxlength="6" placeholder="Enter 6-digit OTP" required />
+              <label>OTP Code (Use: 123456)</label>
+              <i class='bx bx-shield-quarter'></i>
+            </div>
+            <div class="otp-resend-row">
+              <span id="login-otp-timer">Resend OTP in 30s</span>
+              <button type="button" id="login-resend-otp-link" class="link-btn hidden">Resend</button>
+            </div>
+            <button type="button" class="btn" id="login-verify-otp-btn">
+              <i class='bx bx-check-double'></i> Verify & Enter
+            </button>
+          </div>
+        </div>
+
+        <!-- 3. Login with Email -->
+        <form id="login-email-form" class="auth-view hidden">
+          <div class="input-box animation" style="--i:2;">
+            <input type="text" id="login-user" required value="researcher@hackathon.ai" />
+            <label>Username or Email</label>
+            <i class='bx bxs-user'></i>
+          </div>
+          <div class="input-box animation" style="--i:3;">
+            <input type="password" id="login-pass" required value="password123" />
+            <label>Password</label>
+            <i class='bx bxs-lock-alt'></i>
+          </div>
+          <button type="submit" class="btn animation" style="--i:4;">Sign In</button>
+        </form>
+
+        <div class="regi-link animation" style="--i:5;">
+          <p>Don't have an account? <a href="#" class="SignUpLink">Sign Up</a></p>
+        </div>
+      </div>
+
+      <!-- Info on Login Side -->
+      <div class="info-content Login">
+        <h2 class="animation" style="--i:0;">WELCOME BACK!</h2>
+        <p class="animation" style="--i:1;">Log in to discover research gaps, synthesize paper limitations, and generate novel approaches.</p>
+      </div>
+
+      <!-- ================= REGISTER / SIGN UP FORM BOX ================= -->
+      <div class="form-box register">
+        <h2 class="animation" style="--i:17;">Sign Up</h2>
+
+        <!-- Auth Method Selector for Signup -->
+        <div class="auth-tabs animation" style="--i:18;">
+          <button type="button" class="auth-tab-btn active" id="tab-signup-google-btn">
+            <i class='bx bxl-google'></i> Google
+          </button>
+          <button type="button" class="auth-tab-btn" id="tab-signup-phone-btn">
+            <i class='bx bx-mobile-alt'></i> Phone OTP
+          </button>
+          <button type="button" class="auth-tab-btn" id="tab-signup-email-btn">
+            <i class='bx bx-envelope'></i> Email
+          </button>
+        </div>
+
+        <!-- 1. Sign Up with Google (NEW) -->
+        <div id="signup-google-view" class="auth-view active">
+          <p class="auth-subtext animation" style="--i:19;">Authenticate with Google to create your researcher profile</p>
+          <div class="google-btn-wrapper animation" style="--i:20;">
+           <div id="signup-google-btn"></div>
+          </div>
+        </div>
+
+        <!-- 2. Sign Up with Phone OTP (NEW) -->
+        <div id="signup-phone-view" class="auth-view hidden">
+          <div id="signup-phone-step">
+            <div class="input-box animation" style="--i:19;">
+              <input type="tel" id="signup-user-phone" placeholder=" " required />
+              <label>Phone Number</label>
+              <i class='bx bx-phone'></i>
+            </div>
+            <button type="button" class="btn animation" style="--i:20;" id="signup-send-otp-btn">
+              <i class='bx bx-send'></i> Send OTP
+            </button>
+          </div>
+
+          <div id="signup-otp-step" class="hidden">
+            <div class="input-box">
+              <input type="text" id="signup-user-otp" maxlength="6" placeholder="Enter 6-digit OTP" required />
+              <label>OTP Code (Use: 123456)</label>
+              <i class='bx bx-shield-quarter'></i>
+            </div>
+            <div class="otp-resend-row">
+              <span id="signup-otp-timer">Resend OTP in 30s</span>
+              <button type="button" id="signup-resend-otp-link" class="link-btn hidden">Resend</button>
+            </div>
+            <button type="button" class="btn" id="signup-verify-otp-btn">
+              <i class='bx bx-check-double'></i> Register Account
+            </button>
+          </div>
+        </div>
+
+        <!-- 3. Sign Up with Email -->
+        <form id="signup-email-form" class="auth-view hidden">
+          <div class="input-box animation" style="--i:19;">
+            <input type="text" id="reg-name" required />
+            <label>Full Name</label>
+            <i class='bx bxs-user'></i>
+          </div>
+
+          <div class="input-box animation" style="--i:20;">
+            <input type="email" id="reg-email" required />
+            <label>Email Address</label>
+            <i class='bx bxs-envelope'></i>
+          </div>
+
+          <div class="input-box animation" style="--i:21;">
+            <input type="password" id="reg-pass" required />
+            <label>Create Password</label>
+            <i class='bx bxs-lock-alt'></i>
+          </div>
+
+          <button type="submit" class="btn animation" style="--i:22;">Create Account</button>
+        </form>
+
+        <div class="regi-link animation" style="--i:23;">
+          <p>Already have an account? <a href="#" class="SignInLink">Sign In</a></p>
+        </div>
+      </div>
+
+      <!-- Info on Register Side -->
+      <div class="info-content register">
+        <h2 class="animation" style="--i:17;">JOIN US!</h2>
+        <p class="animation" style="--i:18;">Accelerate your literature review workflow with real-time academic paper cross-checking.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= DASHBOARD SCREEN ================= -->
+  <div id="dashboard-screen" class="hidden">
+    <!-- Navbar -->
+    <header class="dash-navbar">
+      <div class="logo">
+        <i data-lucide="sparkles" class="icon-accent"></i>
+        <span>LitGap <span class="accent-text">AI</span></span>
+      </div>
+
+      <div class="user-badge" id="user-display">
+        <i data-lucide="shield-check" class="icon-xs icon-accent"></i>
+        <span id="user-display-name">Researcher</span>
+      </div>
+
+      <div class="nav-actions">
+        <button id="copy-summary-btn" class="icon-button" title="Copy Analysis"><i data-lucide="copy"></i></button>
+        <button id="export-brief-btn" class="icon-button" title="Download Report"><i data-lucide="download"></i></button>
+        <button id="logout-btn" class="logout-link"><i data-lucide="log-out"></i> Logout</button>
+      </div>
+    </header>
+
+    <!-- Workspace -->
+    <div class="dash-container">
+      <!-- Search Card -->
+      <div class="card search-card">
+        <div class="source-tabs">
+          <button id="tab-btn-topic" class="mode-tab active"><i data-lucide="search"></i> Topic / Question</button>
+          <button id="tab-btn-upload" class="mode-tab"><i data-lucide="upload"></i> Upload Documents</button>
+          <button id="tab-btn-library" class="mode-tab"><i data-lucide="database"></i> Paper Vault</button>
+        </div>
+
+        <div id="section-topic" class="mode-section">
+          <div class="search-bar">
+            <i data-lucide="search" class="search-icon"></i>
+            <input type="text" id="search-input" value="AI-based crop disease detection" placeholder="Search topic or research question..." />
+            <button id="analyze-btn" class="btn-primary"><i data-lucide="play"></i> Discover Gaps</button>
+          </div>
+          <div class="quick-tags">
+            <span class="tags-label"><i data-lucide="sliders" class="icon-xs"></i> Examples:</span>
+            <button class="query-pill" data-query="AI-based crop disease detection">🌾 Plant Disease</button>
+            <button class="query-pill" data-query="Few-shot ECG arrhythmia classification">🩺 ECG Arrhythmia</button>
+          </div>
+        </div>
+
+        <div id="section-upload" class="mode-section hidden">
+          <div class="drop-zone" id="drop-zone">
+            <input type="file" id="file-input" multiple accept=".pdf,.doc,.docx,.txt" hidden />
+            <i data-lucide="file-text" class="upload-icon"></i>
+            <p>Drag & drop papers (PDF, DOCX, TXT) or <span id="browse-trigger">browse files</span></p>
+          </div>
+        </div>
+
+        <div id="section-library" class="mode-section hidden">
+          <p style="font-size: 12px; color: #a1a1aa; margin-bottom: 10px;">Select pre-indexed benchmark papers:</p>
+          <div class="vault-grid">
+            <label class="vault-item">
+              <input type="checkbox" checked />
+              <div class="vault-info">
+                <strong>Deep Residual Learning for In-Field Plant Pathogens</strong>
+                <small>Sharma et al. • 2023 • arXiv:2301.00000</small>
+              </div>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Progressive Pipeline Status -->
+      <div id="pipeline-stepper" class="card pipeline-card hidden">
+        <div class="pipeline-header">
+          <div class="pulsing-core"></div>
+          <h4>Live Agent RAG Pipeline</h4>
+        </div>
+        <div class="steps-row">
+          <div class="step-box active" id="step-0"><i data-lucide="search"></i> Search Literature</div>
+          <div class="step-box" id="step-1"><i data-lucide="file-code"></i> Parse Limitations</div>
+          <div class="step-box" id="step-2"><i data-lucide="git-compare"></i> Compare Papers</div>
+          <div class="step-box" id="step-3"><i data-lucide="lightbulb"></i> Synthesize Gaps</div>
+        </div>
+      </div>
+
+      <!-- Results Grid -->
+      <div class="results-grid">
+        <!-- Left: Literature List -->
+        <div class="card papers-panel">
+          <div class="panel-header">
+            <h3><i data-lucide="book-open" class="icon-accent"></i> 1. Relevant Papers</h3>
+            <span class="count-tag" id="paper-count-tag">2 Papers Found</span>
+          </div>
+          <div class="paper-list" id="papers-container">
+            <div class="paper-item">
+              <div class="paper-title-row">
+                <h4>Deep Learning for In-Field Plant Pathogens</h4>
+                <a href="https://arxiv.org" target="_blank" class="ext-link"><i data-lucide="external-link"></i></a>
+              </div>
+              <div class="paper-meta"><span>Sharma et al.</span> <span class="badge-year">2023</span></div>
+              <div class="tag-row"><span class="dataset-tag">PlantVillage (54k)</span></div>
+            </div>
+            <div class="paper-item">
+              <div class="paper-title-row">
+                <h4>Edge Vision Transformers for Agritech</h4>
+                <a href="https://arxiv.org" target="_blank" class="ext-link"><i data-lucide="external-link"></i></a>
+              </div>
+              <div class="paper-meta"><span>Chen & Patel</span> <span class="badge-year">2024</span></div>
+              <div class="tag-row"><span class="dataset-tag">Field-Farm (1.2k)</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Insights Tabs -->
+        <div class="card insights-panel">
+          <div class="tab-strip">
+            <button class="nav-tab active" data-tab="tab-matrix"><i data-lucide="git-compare"></i> 2. Comparison Matrix</button>
+            <button class="nav-tab" data-tab="tab-gaps"><i data-lucide="alert-triangle"></i> 3. Potential Gaps</button>
+            <button class="nav-tab" data-tab="tab-approach"><i data-lucide="lightbulb"></i> 4. Suggested Approach</button>
+          </div>
+
+          <!-- Tab 1: Matrix -->
+          <div id="tab-matrix" class="tab-content active">
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Paper</th><th>Methodology</th><th>Dataset</th><th>Key Result</th><th class="lim-header">Limitation</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="bold-text">Sharma et al.</td><td>ResNet-50 + Attention</td><td>PlantVillage</td><td class="success-text">98.2% Accuracy</td><td class="lim-text">Sharp degradation under outdoor shadows & leaf occlusions.</td>
+                  </tr>
+                  <tr>
+                    <td class="bold-text">Chen & Patel</td><td>MobileViT INT8</td><td>Field-Farm</td><td class="success-text">32ms on Pi 4</td><td class="lim-text">Low recall on early-stage asymptomatic micro-lesions.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Tab 2: Gaps -->
+          <div id="tab-gaps" class="tab-content">
+            <div class="gap-card">
+              <div class="gap-top">
+                <span class="gap-badge">Recurring Limitation in 2/2 Papers</span>
+                <h4>Outdoor Field Robustness & Environmental Lighting Invariance</h4>
+              </div>
+              <div class="gap-reason">
+                <p><strong>Why it may represent a gap:</strong> Current models saturate benchmark accuracy in studio conditions but collapse in farmer field mobile captures subject to variable weather and sun angles.</p>
+              </div>
+              <div class="gap-evidence">
+                <span class="ev-title">Supporting Paper Evidence:</span>
+                <p class="ev-quote">"Sharma et al. noted a 34% drop under outdoor cloud shadows, while Chen et al. recorded failures under partial leaf angle shifts."</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab 3: Approach -->
+          <div id="tab-approach" class="tab-content">
+            <div class="blueprint-box">
+              <h3>Proposed Solution Direction</h3>
+              <p>Self-Supervised Synthetic Weather Augmentation with Distilled Vision Transformers (MobileViT-v2).</p>
+            </div>
+            <div class="blueprint-grid">
+              <div class="bp-card">
+                <h4>Suggested Methodology</h4>
+                <p>Train a contrastive self-supervised encoder with noise-robust augmentations, distilling into an INT8 quantized MobileViT backbone.</p>
+              </div>
+              <div class="bp-card">
+                <h4>Target Stack</h4>
+                <div class="chip-container">
+                  <span class="chip chip-accent">PyTorch</span>
+                  <span class="chip chip-accent">MobileViT-v2</span>
+                  <span class="chip chip-accent">FastAPI</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
