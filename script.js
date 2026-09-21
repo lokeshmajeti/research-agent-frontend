@@ -1,5 +1,54 @@
+window.handleCredentialResponse = function (response) {
+  try {
+    const encodedPayload = response.credential.split('.')[1]
+      .replace(/-/g, '+')
+      .replace(/_/g, '/');
+    const payload = JSON.parse(atob(encodedPayload));
+    const userName = payload.name || payload.email || 'Google Researcher';
+
+    document.getElementById('user-display-name').textContent = userName;
+    document.getElementById('auth-screen').classList.add('hidden');
+    document.getElementById('dashboard-screen').classList.remove('hidden');
+    lucide.createIcons();
+  } catch (error) {
+    console.error('Google authentication response could not be read.', error);
+    alert('Google sign-in could not be completed. Please try again.');
+  }
+};
+
+window.initializeGoogleButtons = function () {
+  const renderButtons = () => {
+    if (!window.google || !window.google.accounts || !window.google.accounts.id) {
+      console.error('Google Identity Services did not load.');
+      return;
+    }
+
+    window.google.accounts.id.initialize({
+      client_id: '591396653103-lm4bvmtdt2stbfd0g5qn5akr28vskufj.apps.googleusercontent.com',
+      callback: window.handleCredentialResponse
+    });
+
+    ['login-google-button', 'signup-google-button'].forEach(buttonId => {
+      window.google.accounts.id.renderButton(document.getElementById(buttonId), {
+        type: 'standard',
+        theme: 'filled_black',
+        size: 'large',
+        shape: 'pill',
+        text: buttonId === 'login-google-button' ? 'signin_with' : 'signup_with'
+      });
+    });
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', renderButtons, { once: true });
+  } else {
+    renderButtons();
+  }
+};
+
 document.addEventListener('DOMContentLoaded', () => {
   lucide.createIcons();
+  window.initializeGoogleButtons();
 
   // Screens
   const authScreen = document.getElementById('auth-screen');
@@ -27,10 +76,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const signupGoogleView = document.getElementById('signup-google-view');
   const signupPhoneView = document.getElementById('signup-phone-view');
   const signupEmailView = document.getElementById('signup-email-form');
-
-  // Google Buttons
-  const loginGoogleBtn = document.getElementById('login-google-btn');
-  const signupGoogleBtn = document.getElementById('signup-google-btn');
 
   // Login Phone & OTP Elements
   const loginPhoneStep = document.getElementById('login-phone-step');
@@ -132,13 +177,6 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ----------------------------------------------------
      4. GOOGLE AUTHENTICATION (FOR BOTH LOGIN & SIGNUP)
      ---------------------------------------------------- */
-  loginGoogleBtn.addEventListener('click', () => {
-    enterDashboard("Google Researcher");
-  });
-
-  signupGoogleBtn.addEventListener('click', () => {
-    enterDashboard("Google Researcher (New Account)");
-  });
 
   /* ----------------------------------------------------
      5. PHONE + OTP FLOW: LOGIN

@@ -8,7 +8,7 @@
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
   <script src="https://unpkg.com/lucide@latest"></script>
   <!-- Official Google Identity Services SDK -->
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="https://accounts.google.com/gsi/client" async defer onload="initializeGoogleButtons()"></script>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -40,9 +40,7 @@
         <div id="login-google-view" class="auth-view active">
           <p class="auth-subtext animation" style="--i:2;">One-click sign-in with your Google account</p>
           <div class="google-btn-wrapper animation" style="--i:3;">
-            <button type="button" class="btn-google-custom" id="login-google-btn">
-              <i class='bx bxl-google'></i> Continue with Google
-            </button>
+            <div id="login-google-button"></div>
           </div>
         </div>
 
@@ -122,9 +120,7 @@
         <div id="signup-google-view" class="auth-view active">
           <p class="auth-subtext animation" style="--i:19;">Authenticate with Google to create your researcher profile</p>
           <div class="google-btn-wrapper animation" style="--i:20;">
-            <button type="button" class="btn-google-custom" id="signup-google-btn">
-              <i class='bx bxl-google'></i> Create Account with Google
-            </button>
+            <div id="signup-google-button"></div>
           </div>
         </div>
 
