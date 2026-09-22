@@ -1325,3 +1325,266 @@ body {
   border-top: 1px solid #27272a;
   padding-top: 12px;
 }
+
+/* ===================================================
+   5. LARGE-SCREEN DASHBOARD SCALE
+   =================================================== */
+@media (min-width: 1025px) {
+  .dash-navbar {
+    padding: 16px 42px;
+  }
+
+  .logo {
+    font-size: 21px;
+  }
+
+  .user-badge {
+    padding: 6px 14px;
+    font-size: 13px;
+  }
+
+  .icon-button {
+    width: 40px;
+    height: 40px;
+  }
+
+  .logout-link {
+    padding: 8px 14px;
+    font-size: 13px;
+  }
+
+  .dash-container {
+    max-width: 1440px;
+    width: calc(100% - 48px);
+    margin: 28px auto 40px;
+    padding: 0;
+    gap: 24px;
+  }
+
+  .card {
+    padding: 24px;
+    border-radius: 14px;
+  }
+
+  .source-tabs {
+    gap: 10px;
+    padding-bottom: 14px;
+    margin-bottom: 18px;
+  }
+
+  .mode-tab {
+    padding: 9px 17px;
+    font-size: 14px;
+  }
+
+  .search-bar {
+    padding: 8px 14px;
+    gap: 10px;
+  }
+
+  .search-bar input {
+    font-size: 15px;
+  }
+
+  .btn-primary {
+    padding: 10px 18px;
+    font-size: 14px;
+  }
+
+  .quick-tags {
+    gap: 8px;
+    margin-top: 14px;
+  }
+
+  .tags-label,
+  .query-pill {
+    font-size: 13px;
+  }
+
+  .query-pill {
+    padding: 5px 10px;
+  }
+
+  .drop-zone {
+    padding: 34px;
+  }
+
+  .drop-zone p {
+    font-size: 15px;
+  }
+
+  .drop-zone small {
+    font-size: 12px;
+    margin-top: 4px;
+  }
+
+  .section-desc {
+    font-size: 13px;
+  }
+
+  .vault-group-title h4,
+  .pipeline-header h4 {
+    font-size: 15px;
+  }
+
+  .vault-item {
+    padding: 14px 16px;
+  }
+
+  .vault-info strong {
+    font-size: 14px;
+  }
+
+  .vault-info small {
+    font-size: 12px;
+  }
+
+  .pipeline-header {
+    margin-bottom: 14px;
+  }
+
+  .steps-row {
+    gap: 12px;
+  }
+
+  .step-box {
+    padding: 12px 14px;
+    font-size: 13px;
+  }
+
+  .results-grid {
+    grid-template-columns: 360px 1fr;
+    gap: 24px;
+  }
+
+  .panel-header {
+    padding-bottom: 14px;
+    margin-bottom: 16px;
+  }
+
+  .panel-header h3 {
+    font-size: 15px;
+  }
+
+  .count-tag {
+    font-size: 11px;
+    padding: 3px 8px;
+  }
+
+  .paper-list {
+    gap: 12px;
+  }
+
+  .paper-item {
+    padding: 14px;
+    gap: 6px;
+  }
+
+  .paper-title-row h4 {
+    font-size: 13px;
+  }
+
+  .paper-meta {
+    font-size: 12px;
+  }
+
+  .dataset-tag {
+    font-size: 10px;
+    padding: 2px 6px;
+  }
+
+  .tab-strip {
+    gap: 8px;
+    padding-bottom: 12px;
+    margin-bottom: 18px;
+  }
+
+  .nav-tab {
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+
+  .data-table {
+    font-size: 13px;
+  }
+
+  .data-table th,
+  .data-table td {
+    padding: 12px 14px;
+  }
+
+  .gap-card {
+    padding: 18px;
+    margin-bottom: 14px;
+    gap: 10px;
+  }
+
+  .gap-top h4 {
+    font-size: 15px;
+  }
+
+  .gap-reason,
+  .gap-evidence {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  .ev-title {
+    font-size: 11px;
+  }
+
+  .blueprint-box {
+    padding: 18px;
+    margin-bottom: 16px;
+  }
+
+  .blueprint-box h3 {
+    font-size: 15px;
+  }
+
+  .blueprint-box p {
+    font-size: 13px;
+    margin-top: 4px;
+  }
+
+  .blueprint-grid {
+    gap: 16px;
+  }
+
+  .bp-card {
+    padding: 16px;
+  }
+
+  .bp-card h4 {
+    font-size: 14px;
+  }
+
+  .bp-card p {
+    font-size: 13px;
+  }
+
+  .chip {
+    font-size: 11px;
+    padding: 4px 8px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .results-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dash-container,
+  .results-grid,
+  .insights-panel {
+    min-width: 0;
+  }
+
+  .tab-strip {
+    overflow-x: auto;
+  }
+
+  .nav-tab {
+    flex-shrink: 0;
+  }
+}
