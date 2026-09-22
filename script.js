@@ -42,6 +42,50 @@ document.addEventListener('DOMContentLoaded', () => {
     resetResults();
   }
 
+  function handleGoogleCredential(response) {
+    try {
+      const encodedPayload = response.credential.split('.')[1]
+        .replace(/-/g, '+')
+        .replace(/_/g, '/');
+      const payload = JSON.parse(atob(encodedPayload));
+      enterDashboard(payload.name || payload.email || 'Google Researcher');
+    } catch (error) {
+      console.error('Google authentication response could not be read.', error);
+      alert('Google sign-in could not be completed. Please try again.');
+    }
+  }
+
+  function initializeGoogleButtons(retryCount = 0) {
+    if (!window.google?.accounts?.id) {
+      if (retryCount < 20) {
+        window.setTimeout(() => initializeGoogleButtons(retryCount + 1), 250);
+      } else {
+        console.error('Google Identity Services did not load.');
+      }
+      return;
+    }
+
+    window.google.accounts.id.initialize({
+      client_id: '591396653103-lm4bvmtdt2stbfd0g5qn5akr28vskufj.apps.googleusercontent.com',
+      callback: handleGoogleCredential
+    });
+
+    ['login-google-button', 'signup-google-button'].forEach((buttonId) => {
+      const button = document.getElementById(buttonId);
+      if (button) {
+        window.google.accounts.id.renderButton(button, {
+          type: 'standard',
+          theme: 'filled_black',
+          size: 'large',
+          shape: 'pill',
+          text: buttonId === 'login-google-button' ? 'signin_with' : 'signup_with'
+        });
+      }
+    });
+  }
+
+  initializeGoogleButtons();
+
   // Logout back to Auth Screen
   logoutBtn.addEventListener('click', () => {
     dashboardScreen.classList.add('hidden');
@@ -301,66 +345,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
   /* ========================================================
-     5. GOOGLE ACCOUNT CHOOSER MODAL AUTHENTICATION
-     ======================================================== */
-
-  const googleModal =
-    document.getElementById('google-modal-overlay');
-
-  const closeGoogleModalBtn =
-    document.getElementById('close-google-modal-btn');
-
-  const googleCustomEmailBtn =
-    document.getElementById('google-custom-email-btn');
-
-  function openGoogleChooser() {
-    googleModal.classList.remove('hidden');
-  }
-
-  document
-    .getElementById('login-google-btn')
-    .addEventListener('click', openGoogleChooser);
-
-  document
-    .getElementById('signup-google-btn')
-    .addEventListener('click', openGoogleChooser);
-
-  closeGoogleModalBtn.addEventListener('click', () => {
-    googleModal.classList.add('hidden');
-  });
-
-  document
-    .querySelectorAll('.google-acc-item')
-    .forEach(btn => {
-      if (btn.id === 'google-custom-email-btn') {
-        return;
-      }
-
-      btn.addEventListener('click', () => {
-        const name =
-          btn.getAttribute('data-name');
-
-        googleModal.classList.add('hidden');
-
-        enterDashboard(name);
-      });
-    });
-
-  googleCustomEmailBtn.addEventListener('click', () => {
-    const custom =
-      prompt("Enter your Gmail address:");
-
-    if (custom && custom.trim() !== '') {
-      googleModal.classList.add('hidden');
-
-      enterDashboard(
-        custom.split('@')[0]
-      );
-    }
-  });
-
-  /* ========================================================
-     6. DASHBOARD WORKSPACE SOURCE SWITCHING
+     5. DASHBOARD WORKSPACE SOURCE SWITCHING
      ======================================================== */
 
   const tabBtnTopic =

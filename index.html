@@ -7,6 +7,7 @@
   <!-- Boxicons for Auth & Lucide for Dashboard -->
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
   <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -36,11 +37,9 @@
 
         <!-- 1. Google Login -->
         <div id="login-google-view" class="auth-view active">
-          <p class="auth-subtext animation" style="--i:2;">continue with google chooser — connect Google OAuth for production use</p>
+          <p class="auth-subtext animation" style="--i:2;">Sign in securely with your Google account</p>
           <div class="google-btn-wrapper animation" style="--i:3;">
-            <button type="button" class="btn-google-custom" id="login-google-btn">
-              <i class='bx bxl-google'></i> Continue with google
-            </button>
+            <div id="login-google-button"></div>
           </div>
         </div>
 
@@ -117,11 +116,9 @@
 
         <!-- Signup with Google -->
         <div id="signup-google-view" class="auth-view active">
-          <p class="auth-subtext animation" style="--i:19;">Continue with Google — connect Google OAuth for production use</p>
+          <p class="auth-subtext animation" style="--i:19;">Create your researcher account with Google</p>
           <div class="google-btn-wrapper animation" style="--i:20;">
-            <button type="button" class="btn-google-custom" id="signup-google-btn">
-              <i class='bx bxl-google'></i> Continue with Google
-            </button>
+            <div id="signup-google-button"></div>
           </div>
         </div>
 
